@@ -42,7 +42,7 @@ print('Reference temperature of cell:', my_params.parameterisation.cell.referenc
 
 Alternatively, you can export the `BPX` object as a dictionary and use the string names (aliases) of the parameters from the standard
 ```python
-my_params_dict = my_params.model_dump(by_alias=True)
+my_params_dict = my_params.model_dump(by_alias=True, exclude_none=True)
 print('Reference temperature of cell:', my_params_dict["Parameterisation"]["Cell"]["Reference temperature [K]"])
 ```
 

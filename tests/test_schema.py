@@ -839,6 +839,11 @@ class TestSchema(unittest.TestCase):
                 with pytest.raises(ValidationError, match="Macroscopic dimensionality not applicable"):
                     adapter.validate_python(test)
 
+    def test_round_trip_exclude_none(self) -> None:
+        for base in [self.base, self.base_spm, self.partial]:
+            obj = adapter.validate_python(copy.deepcopy(base))
+            adapter.validate_python(obj.model_dump(by_alias=True, exclude_none=True))
+
 
 if __name__ == "__main__":
     unittest.main()
