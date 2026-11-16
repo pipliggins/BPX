@@ -86,7 +86,8 @@ class Header(ExtraBaseModel):
     @model_validator(mode="after")
     def _validate_macroscopic_dimensionality(self) -> Header:
         """
-        Validates that macroscopic_dimensionality is provided for DFN models and not provided for SPM/SPMe models.
+        Defaults macroscopic dimensionality to 1 for DFN models if omitted, and rejects
+        inclusion for other models.
         """
 
         if self.model == "DFN" and self.macroscopic_dimensionality is None:
