@@ -829,8 +829,8 @@ class TestSchema(unittest.TestCase):
         with pytest.raises(ValidationError, match="Input should be 1, 2 or 3"):
             adapter.validate_python(test)
 
-    def test_dimensionality_only_for_dfn(self) -> None:
-        cases = {"SPMe": self.base, "SPM": self.base_spm, "Partial": self.partial}
+    def test_dimensionality_not_allowed_for_spm_spme(self) -> None:
+        cases = {"SPMe": self.base, "SPM": self.base_spm}
         for model, base in cases.items():
             with self.subTest(model=model):
                 test = copy.deepcopy(base)
@@ -838,6 +838,14 @@ class TestSchema(unittest.TestCase):
                 test["Header"]["Macroscopic dimensionality"] = 1
                 with pytest.raises(ValidationError, match="Macroscopic dimensionality not applicable"):
                     adapter.validate_python(test)
+
+    def test_dimensionality_optional_for_partial(self) -> None:
+        test = copy.deepcopy(self.partial)
+        assert adapter.validate_python(test).header.macroscopic_dimensionality is None
+
+        test = copy.deepcopy(self.partial)
+        test["Header"]["Macroscopic dimensionality"] = 2
+        assert adapter.validate_python(test).header.macroscopic_dimensionality == 2
 
     def test_round_trip_exclude_none(self) -> None:
         for base in [self.base, self.base_spm, self.partial]:
